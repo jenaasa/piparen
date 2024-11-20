@@ -1,0 +1,47 @@
+import numpy as np
+import matplotlib.pyplot as plt
+N = 100000
+T = 0.01
+h = T/N
+nvt = 0.025
+r1 = 1000
+r2 = 1500
+i0 = 10**(-8)
+r0 = 50
+
+z = 0.2
+gy = 1
+y = np.zeros(N+1)
+y[0] = 0.3
+
+y2 = np.zeros(N+1)
+tid = np.linspace(0,T,N+1)
+y2[0] = 1
+
+C = 155*10**(-9)
+L = 1* 10**(-3)
+
+frekvens = 1/(np.pi*2*np.sqrt(L*C))
+def G(y, z):
+    for n in range(10):
+        
+        z = z - (z*r1/r2+2*i0*r1*np.sinh(z/nvt)-y)/(r1/r2+2*i0*r1/nvt*np.cosh(z/nvt))
+        gy = 1/(r1/r2+ 2*i0*r1/nvt*np.cosh(z/nvt))
+        
+        
+    return gy, z
+
+
+
+for n in range(N):
+    
+    y[n+1] = y[n] + h*y2[n]
+    gy, z= G(y[n+1], z)
+    y2[n+1] = y2[n] + h* (r0/L*(gy-1)*y2[n] - 1/L/C*y[n+1])
+
+plt.plot(y,y2)
+plt.show()
+
+plt.plot(tid,y)
+plt.show()
+    
